@@ -29,6 +29,7 @@
 
 <script>
 export default {
+  name: 'AuthModalTabs',
   props: { tab: String },
   emits: ['changeModalTabs'],
   methods: {

@@ -28,10 +28,10 @@
           <AppAuthTabs :tab="tab" @changeModalTabs="changeModalTabs" />
 
           <!-- Login Form -->
-          <AppAuthLogin :tab="tab" />
+          <AppAuthLogin v-if="tab === 'login'" />
 
           <!-- Registration Form -->
-          <AppAuthRegister :tab="tab" />
+          <AppAuthRegister v-else />
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { mapState, mapWritableState } from 'pinia'
+import { mapWritableState } from 'pinia'
 import useModalStore from '@/stores/Modal/modal'
 import AppAuthTabs from './components/Tabs/AppAuthTabs.vue'
 import AppAuthLogin from './components/LoginForm/AppAuthLoginForm.vue'
@@ -57,9 +57,9 @@ export default {
       In this case, since we want to use the store's methods, we need to pass the methods name 
       to the function's second argument, inside an array.
     */
-    ...mapState(useModalStore, ['hiddenClass']),
     ...mapWritableState(useModalStore, {
-      modalVisibility: 'isOpen'
+      modalVisibility: 'isOpen',
+      hiddenClass: 'hiddenClass'
     })
   },
   components: {
