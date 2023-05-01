@@ -8,14 +8,19 @@
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
-          <li>
+          <li v-if="!userLoggedIn">
             <a class="px-2 text-white" href="#" @click.prevent="toggleAuthModal"
               >Login / Register</a
             >
           </li>
-          <li>
-            <a class="px-2 text-white" href="#">Manage</a>
-          </li>
+          <template v-else>
+            <li>
+              <a class="px-2 text-white" href="#">Manage</a>
+            </li>
+            <li>
+              <a class="px-2 text-white" href="#" @click.prevent="logout">Logout</a>
+            </li>
+          </template>
         </ul>
       </div>
     </nav>
@@ -29,31 +34,43 @@
   On the other hand, if you only need to access or modify state using methods from the component
   you can use the mapState or mapWritableState functions to register the store.
   The mapState function turn the state into a readonly variable, so it can not be modified.
-  The mapWritableState lets us modify the State as much as we want.
+  The mapWritableState function lets us modify the State as much as we want.
+  The mapActions function lets us implements the action methods defined inside our store that helps us 
+  handle and mutate the global state contained inside each store.
 */
 import {
-  mapStores
-  // mapState,
+  mapState,
+  mapActions,
+  mapWritableState
+  // mapStores,
   // mapWritableState
 } from 'pinia'
 import useModalStore from '@/stores/Modal/modal.js'
+import useUserStore from '@/stores/User/user.js'
 
 export default {
   name: 'AppHeader',
   // Registers stores to be used
   computed: {
     // Needs to pass only the store
-    ...mapStores(useModalStore)
-    // Needs to pass both store and the state we want to use (same case with mapState function)
-    // ...mapWritableState(useModalStore, ['isOpen'])
+    // ...mapStores(useModalStore),
+    // Needs to pass both store and the state we want to use (same case with mapWritableState function)
+    ...mapState(useUserStore, ['userLoggedIn']),
+    ...mapWritableState(useModalStore, ['isOpen'])
   },
   methods: {
+    /**
+      Needs to pass both store and the function we want to use
+      In this case, since actions can be asynchronous, we need to pass mapActions inside the methods
+      object. 
+    */
+    ...mapActions(useUserStore, ['logout']),
     toggleAuthModal() {
       /** 
         If we use the mapState functions, we can simply use the property without calling the store 
         through dot notation 
       */
-      this.modalStore.isOpen = !this.modalStore.isOpen
+      this.isOpen = !this.isOpen
     }
   }
 }

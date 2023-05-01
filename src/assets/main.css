@@ -36,7 +36,7 @@ a:hover {
   border-style: solid;
 }
 
-input[type="file"] {
+input[type='file'] {
   margin-top: 20px;
 }
 
@@ -76,4 +76,8 @@ input[type="file"] {
   100% {
     background-position: -4000px 0;
   }
+}
+
+[v-cloak] {
+  display: none;
 }

@@ -39,6 +39,8 @@
 
 <script>
 import AppAuthFeedbackInfo from '../AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
+import { mapActions } from 'pinia'
+import useUserStore from '@/stores/User/user'
 
 export default {
   name: 'LoginForm',
@@ -58,16 +60,26 @@ export default {
     AppAuthFeedbackInfo
   },
   methods: {
+    ...mapActions(useUserStore, ['authenticate']),
     async login(values) {
       this.loginShowAlert = true
       this.loginInProgress = true
       this.loginAlertVariant = 'bg-blue-500'
       this.loginAlertMessage = 'Logging you in.'
 
+      try {
+        await this.authenticate(values)
+      } catch (error) {
+        this.loginInProgress = false
+        this.loginAlertVariant = 'bg-red-500'
+        this.loginAlertMessage = 'Invalid login details.'
+
+        return
+      }
+
       this.loginAlertVariant = 'bg-green-500'
       this.loginAlertMessage = 'You are logged in.'
-
-      console.log(values)
+      window.location.reload()
     }
   }
 }

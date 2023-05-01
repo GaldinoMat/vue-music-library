@@ -1,4 +1,4 @@
-<template>
+<template v-cloak>
   <!-- Header -->
   <AppHeader />
 
@@ -273,12 +273,23 @@
 <script>
 import AppHeader from '@/components/Header/AppHeader.vue'
 import AppAuthModal from '@/components/AuthModal/AppAuthModal.vue'
+import { mapWritableState } from 'pinia'
+import useUserStore from './stores/User/user'
+import { auth } from './includes/firebase'
 
 export default {
   name: 'App',
   components: {
     AppHeader,
     AppAuthModal
+  },
+  computed: {
+    ...mapWritableState(useUserStore, ['userLoggedIn'])
+  },
+  created() {
+    if (auth.currentUser) {
+      this.userLoggedIn = true
+    }
   }
 }
 </script>

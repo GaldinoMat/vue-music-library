@@ -103,6 +103,8 @@
 
 <script>
 import AppAuthFeedbackInfo from '../AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
+import { mapActions } from 'pinia'
+import useUserStore from '@/stores/User/user'
 
 export default {
   name: 'RegisterForm',
@@ -130,16 +132,28 @@ export default {
     AppAuthFeedbackInfo
   },
   methods: {
+    ...mapActions(useUserStore, {
+      createUser: 'register'
+    }),
     async register(values) {
       this.registerShowAlert = true
       this.registerInProgress = true
       this.registerAlertVariant = 'bg-blue-500'
       this.registerAlertMessage = 'Please wait, your account is being created.'
 
+      try {
+        await this.createUser(values)
+      } catch (error) {
+        this.registerInProgress = false
+        this.registerAlertVariant = 'bg-red-500'
+        this.registerAlertMessage = 'An unexpected error occured. Please, try again.'
+
+        return
+      }
+
       this.registerAlertVariant = 'bg-green-500'
       this.registerAlertMessage = 'Account created succesfully'
-
-      console.log(values)
+      window.location.reload()
     }
   }
 }
