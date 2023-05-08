@@ -23,5 +23,6 @@ const fbDatabase = firebase.firestore()
 const storage = firebase.storage()
 
 const usersCollection = fbDatabase.collection('users')
+const songsCollection = fbDatabase.collection('songs')
 
-export { auth, fbDatabase, usersCollection, storage }
+export { auth, fbDatabase, usersCollection, songsCollection, storage }
