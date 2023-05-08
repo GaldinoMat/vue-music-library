@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/storage'
 
 /**
   Firebase configuration object
@@ -19,7 +20,8 @@ firebase.initializeApp(firebaseConfig)
 // Firebase variables
 const auth = firebase.auth()
 const fbDatabase = firebase.firestore()
+const storage = firebase.storage()
 
 const usersCollection = fbDatabase.collection('users')
 
-export { auth, fbDatabase, usersCollection }
+export { auth, fbDatabase, usersCollection, storage }
