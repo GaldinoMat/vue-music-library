@@ -3,7 +3,15 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <MusicUpload />
+        <!-- 
+          Refs are a feature of Vue.
+          They are references to whole components, to which we can use to access methods and data 
+          from it.
+          They are not commonly used, since they are not reactive.
+          Which means that changes made to the ref are not reflected to the component's data instance,
+          only to the DOM.
+        -->
+        <MusicUpload ref="upload" />
       </div>
       <div class="col-span-2">
         <div class="bg-white rounded border border-gray-200 relative flex flex-col">
@@ -109,17 +117,12 @@ export default {
   components: {
     MusicUpload
   }
-  /** 
-    This is a Navigation guard for components. Contrary to the ohter two possibilities, 
+  /**
+    This is a Navigation guard for components. Contrary to the ohter two possibilities,
     this one has access to the components instance.
-    beforeRouteEnter(to, from, next) {
-      const store = useUserStore()
-      
-      if (store.userLoggedIn) {
-        next()
-      } else {
-        next({ name: 'Home' })
-      }
+    beforeRouteLeave(to, from, next) {
+      this.$refs.upload.cancelUploads()
+      next()
     }
   */
 }
