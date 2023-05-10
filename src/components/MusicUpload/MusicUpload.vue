@@ -30,6 +30,12 @@ export default {
       uploads: []
     }
   },
+  props: {
+    addSong: {
+      type: Function,
+      required: true
+    }
+  },
   components: { ProgressBar, DragComponent },
   methods: {
     changeDragState(newsState) {
@@ -85,7 +91,11 @@ export default {
 
             song.url = await task.snapshot.ref.getDownloadURL()
 
-            await songsCollection.add(song)
+            const songRef = await songsCollection.add(song)
+
+            const songSnapshot = await songRef.get()
+
+            this.addSong(songSnapshot)
 
             this.uploads[uploadIndex].variant = 'bg-green-400'
             this.uploads[uploadIndex].icon = 'fas fa-check'

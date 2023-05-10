@@ -23,6 +23,7 @@
             name="SongTitle"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Song Title"
+            @input="updateFlag(true)"
           />
           <ErrorMessage class="text-red-600" name="SongTitle" />
         </div>
@@ -33,6 +34,7 @@
             name="SongGenre"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Genre"
+            @input="updateFlag(true)"
           />
           <ErrorMessage class="text-red-600" name="SongGenre" />
         </div>
@@ -95,6 +97,10 @@ export default {
     removeSong: {
       type: Function,
       required: true
+    },
+    updateFlag: {
+      type: Function,
+      required: true
     }
   },
   components: { AppAuthFeedbackInfo },
@@ -120,6 +126,7 @@ export default {
       }
 
       this.updateSong(this.index, values)
+      this.updateFlag(false)
 
       this.editInSubmission = false
       this.editAlertVariant = 'bg-green-500'

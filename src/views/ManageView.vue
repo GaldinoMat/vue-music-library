@@ -11,7 +11,7 @@
           Which means that changes made to the ref are not reflected to the component's data instance,
           only to the DOM.
         -->
-        <MusicUpload ref="upload" />
+        <MusicUpload ref="upload" :addSong="addSong" />
       </div>
       <MusicList>
         <!-- Composition Items -->
@@ -22,6 +22,7 @@
           :updateSong="updateSong"
           :index="index"
           :removeSong="removeSong"
+          :updateFlag="updateFlag"
         />
       </MusicList>
     </div>
@@ -43,7 +44,8 @@ export default {
   },
   data() {
     return {
-      songs: []
+      songs: [],
+      unsaved: false
     }
   },
   methods: {
@@ -53,27 +55,35 @@ export default {
     },
     removeSong(index) {
       this.songs.splice(index, 1)
-    }
-  },
-  async created() {
-    const snapshot = await songsCollection.where('uid', '==', auth.currentUser.uid).get()
-
-    snapshot.forEach((document) => {
+    },
+    addSong(document) {
       const song = {
         ...document.data(),
         docId: document.id
       }
 
       this.songs.push(song)
-    })
-  }
+    },
+    updateFlag(value) {
+      this.unsaved = value
+    }
+  },
+  async created() {
+    const snapshot = await songsCollection.where('uid', '==', auth.currentUser.uid).get()
+
+    snapshot.forEach(this.addSong)
+  },
   /**
     This is a Navigation guard for components. Contrary to the ohter two possibilities,
     this one has access to the components instance.
-    beforeRouteLeave(to, from, next) {
-      this.$refs.upload.cancelUploads()
-      next()
-    }
   */
+  beforeRouteLeave(to, from, next) {
+    if (!this.unsaved) {
+      next()
+    } else {
+      const leave = confirm('You have unchanged changes. Are you sure you want to leave the page?')
+      next(leave)
+    }
+  }
 }
 </script>
