@@ -122,6 +122,8 @@ export default {
         this.editAlertVariant = 'bg-red-500'
         this.editAlertMessage = 'Something went wrong! Please try again later.'
 
+        console.error(error)
+
         return
       }
 

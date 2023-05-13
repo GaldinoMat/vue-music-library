@@ -148,6 +148,8 @@ export default {
         this.registerAlertVariant = 'bg-red-500'
         this.registerAlertMessage = 'An unexpected error occured. Please, try again.'
 
+        console.error(error)
+
         return
       }
 
