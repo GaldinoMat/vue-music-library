@@ -1,22 +1,24 @@
 <template>
-  <!-- Music Header -->
-  <MusicHeader :song="song" />
-  <!-- Comments -->
-  <CommentSection :commentCount="song.commentCount">
-    <!-- Form -->
-    <CommentForm :getComments="getComments" @updateSongCommentsDb="updateSongCommentsDb">
-      <!-- Sort Comments -->
-      <SortingComponent @changeSort="changeSort" />
-    </CommentForm>
-  </CommentSection>
-  <!-- Comments -->
-  <ul class="container mx-auto">
-    <CommentListItem
-      v-for="comment in sortedComments"
-      :key="comment.commentId"
-      :comment="comment"
-    />
-  </ul>
+  <main>
+    <!-- Music Header -->
+    <MusicHeader :song="song" />
+    <!-- Comments -->
+    <CommentSection :commentCount="song.commentCount">
+      <!-- Form -->
+      <CommentForm :getComments="getComments" @updateSongCommentsDb="updateSongCommentsDb">
+        <!-- Sort Comments -->
+        <SortingComponent @changeSort="changeSort" />
+      </CommentForm>
+    </CommentSection>
+    <!-- Comments -->
+    <ul class="container mx-auto">
+      <CommentListItem
+        v-for="comment in sortedComments"
+        :key="comment.commentId"
+        :comment="comment"
+      />
+    </ul>
+  </main>
 </template>
 
 <script>
@@ -97,6 +99,7 @@ export default {
       })
     }
   },
+  // This special function watches for a change in a specific state and runs logic accordingly
   watch: {
     sort(newValue) {
       if (newValue === this.$route.query.sort) return

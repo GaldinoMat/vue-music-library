@@ -17,7 +17,7 @@
       <!-- Current Position -->
       <div class="player-currenttime">{{ seek }}</div>
       <!-- Scrub Container  -->
-      <div class="w-full h-2 rounded bg-gray-200 relative cursor-pointer">
+      <div @click="updateSeek" class="w-full h-2 rounded bg-gray-200 relative cursor-pointer">
         <!-- Player Ball -->
         <span
           class="absolute -top-2.5 -ml-2.5 text-gray-800 text-lg"
@@ -29,7 +29,7 @@
         <span
           class="block h-2 rounded bg-gradient-to-r from-green-500 to-green-400"
           :style="{ width: playerProgress }"
-        ></span>
+        />
       </div>
       <!-- Duration -->
       <div class="player-duration">{{ duration }}</div>
@@ -54,7 +54,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(usePlayerStore, ['toggleAudio'])
+    ...mapActions(usePlayerStore, ['toggleAudio', 'updateSeek'])
   }
 }
 </script>

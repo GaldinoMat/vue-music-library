@@ -12,7 +12,9 @@ export default defineStore('player', {
   }),
   actions: {
     async startNewSong(song) {
-      if (this.sound instanceof Howl) {this.sound.unload()}
+      if (this.sound instanceof Howl) {
+        this.sound.unload()
+      }
 
       this.currentSong = song
 
@@ -47,6 +49,19 @@ export default defineStore('player', {
       this.playerProgress = `${(this.sound.seek() / this.sound.duration()) * 100}%`
 
       if (this.sound.playing()) requestAnimationFrame(this.progress)
+    },
+    updateSeek(event) {
+      if (!this.sound.playing) return
+
+      const { x, width } = event.currentTarget.getBoundingClientRect()
+
+      const clickXPos = event.clientX - x
+
+      const playerPercentage = clickXPos / width
+      const seconds = this.sound.duration() * playerPercentage
+
+      this.sound.seek(seconds)
+      this.sound.once('seek', this.progress)
     }
   },
   getters: {
