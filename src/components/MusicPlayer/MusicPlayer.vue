@@ -8,11 +8,14 @@
     </div>
     <div class="flex flex-nowrap gap-4 items-center">
       <!-- Play/Pause Button -->
-      <button type="button">
-        <i class="fa fa-play text-gray-500 text-xl"></i>
+      <button type="button" @click.prevent="toggleAudio(this.songToPlay)">
+        <i
+          class="fa text-gray-500 text-xl"
+          :class="{ 'fa-play': !isPlaying, 'fa-pause': isPlaying }"
+        ></i>
       </button>
       <!-- Current Position -->
-      <div class="player-currenttime">00:00</div>
+      <div class="player-currenttime">{{ seek }}</div>
       <!-- Scrub Container  -->
       <div class="w-full h-2 rounded bg-gray-200 relative cursor-pointer">
         <!-- Player Ball -->
@@ -26,13 +29,22 @@
         ></span>
       </div>
       <!-- Duration -->
-      <div class="player-duration">03:06</div>
+      <div class="player-duration">{{ duration }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'pinia'
+import usePlayerStore from '@/stores/Player/player.js'
+
 export default {
-  name: 'MusicPlayer'
+  name: 'MusicPlayer',
+  computed: {
+    ...mapState(usePlayerStore, ['songToPlay', 'isPlaying', 'duration', 'seek'])
+  },
+  methods: {
+    ...mapActions(usePlayerStore, ['toggleAudio'])
+  }
 }
 </script>

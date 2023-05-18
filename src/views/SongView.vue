@@ -1,11 +1,21 @@
 <template>
   <!-- Music Header -->
   <MusicHeader :song="song" />
-  <!-- Form -->
-  <CommentSection />
+  <!-- Comments -->
+  <CommentSection :commentCount="song.commentCount">
+    <!-- Form -->
+    <CommentForm :getComments="getComments" @updateSongCommentsDb="updateSongCommentsDb">
+      <!-- Sort Comments -->
+      <SortingComponent @changeSort="changeSort" />
+    </CommentForm>
+  </CommentSection>
   <!-- Comments -->
   <ul class="container mx-auto">
-    <CommentListItem v-for="comment in comments" :key="comment.commentId" :comment="comment" />
+    <CommentListItem
+      v-for="comment in sortedComments"
+      :key="comment.commentId"
+      :comment="comment"
+    />
   </ul>
 </template>
 
@@ -14,19 +24,38 @@ import { songsCollection, commentsCollection } from '@/includes/firebase.js'
 import CommentSection from '@/components/CommentSection/CommentSection.vue'
 import CommentListItem from '@/components/CommentListItem/CommentListItem.vue'
 import MusicHeader from '@/components/MusicHeader/MusicHeader.vue'
+import CommentForm from '@/components/CommentForm/CommentForm.vue'
+import SortingComponent from '@/components/SortingComponent/SortingComponent.vue'
+import { mapWritableState } from 'pinia'
+import usePlayerStore from '@/stores/Player/player.js'
 
 export default {
   name: 'SongView',
   data() {
     return {
       song: {},
-      comments: []
+      comments: [],
+      sort: 'latest'
     }
   },
   components: {
     CommentSection,
     CommentListItem,
-    MusicHeader
+    MusicHeader,
+    CommentForm,
+    SortingComponent
+  },
+  computed: {
+    ...mapWritableState(usePlayerStore, ['songToPlay']),
+    sortedComments() {
+      return this.comments
+        .slice()
+        .sort((a, b) =>
+          this.sort === 'latest'
+            ? new Date(b.datePosted) - new Date(a.datePosted)
+            : new Date(a.datePosted) - new Date(b.datePosted)
+        )
+    }
   },
   async created() {
     const songSnapshot = await songsCollection.doc(this.$route.params.id).get()
@@ -36,8 +65,14 @@ export default {
       return
     }
 
+    const { sort } = this.$route.query
+
+    this.sort = sort === 'latest' || sort === 'oldest' ? sort : 'latest'
+
     this.song = songSnapshot.data()
     this.getComments()
+
+    this.songToPlay = this.song
   },
   methods: {
     async getComments() {
@@ -48,11 +83,33 @@ export default {
       this.comments = []
 
       commentsSnapshot.forEach((comment) => {
-        console.log(comment.data())
         this.comments.push({
           commentId: comment.id,
           ...comment.data()
         })
+      })
+    },
+    changeSort(newValue) {
+      this.sort = newValue
+    },
+    async updateSongCommentsDb() {
+      this.song.commentCount += 1
+
+      console.log(this.song.commentCount)
+
+      await songsCollection.doc(this.$route.params.id).update({
+        commentCount: this.song.commentCount
+      })
+    }
+  },
+  watch: {
+    sort(newValue) {
+      if (newValue === this.$route.query.sort) return
+
+      this.$router.push({
+        query: {
+          sort: newValue
+        }
       })
     }
   }

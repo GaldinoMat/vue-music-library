@@ -5,7 +5,7 @@
     :actionAlertMessage="commentAlertMessage"
   />
   <div class="p-6">
-    <VeeForm :validationSchema="schema" @submit="submitEmail" v-if="userLoggedIn">
+    <VeeForm :validationSchema="schema" @submit="submitComment" v-if="userLoggedIn">
       <VeeField
         name="comment"
         as="textarea"
@@ -21,17 +21,15 @@
         Submit
       </button>
     </VeeForm>
-    <!-- Sort Comments -->
-    <SortingComponent />
+    <slot />
   </div>
 </template>
 
 <script>
-import AppAuthFeedbackInfo from '../../../AuthModal/components/AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
+import AppAuthFeedbackInfo from '../AuthModal/components/AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
 import { commentsCollection, auth } from '@/includes/firebase.js'
 import { mapState } from 'pinia'
 import userStore from '@/stores/user/user.js'
-import SortingComponent from './components/SortingComponent/SortingComponent.vue'
 
 export default {
   name: 'CommentForm',
@@ -46,12 +44,19 @@ export default {
       commentAlertMessage: ''
     }
   },
-  components: { AppAuthFeedbackInfo, SortingComponent },
+  emits: ['updateSongCommentsDb'],
+  props: {
+    getComments: {
+      type: Function,
+      required: true
+    }
+  },
+  components: { AppAuthFeedbackInfo },
   computed: {
     ...mapState(userStore, ['userLoggedIn'])
   },
   methods: {
-    async submitEmail(values, { resetForm }) {
+    async submitComment(values, { resetForm }) {
       this.commentShowAlert = true
       this.commentInProgress = true
       this.commentAlertVariant = 'bg-blue-500'
@@ -76,6 +81,9 @@ export default {
 
         return
       }
+      this.$emit('updateSongCommentsDb')
+
+      this.getComments()
 
       this.commentInProgress = false
       this.commentAlertVariant = 'bg-green-500'
