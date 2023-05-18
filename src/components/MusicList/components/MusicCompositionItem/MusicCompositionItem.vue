@@ -3,10 +3,10 @@
     <div v-show="!showForm">
       <h4 class="inline-block text-2xl font-bold">{{ song.modifiedName }}</h4>
       <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right">
-        <i class="fa fa-times" @click.prevent="deleteSong"></i>
+        <i class="fa fa-times" @click.prevent="deleteSong" />
       </button>
       <button class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right">
-        <i class="fa fa-pencil-alt" @click.prevent="showForm = !showForm"></i>
+        <i class="fa fa-pencil-alt" @click.prevent="showForm = !showForm" />
       </button>
     </div>
     <div v-show="showForm">

@@ -2,30 +2,33 @@
   <!-- Player -->
   <div class="fixed bottom-0 left-0 bg-white px-4 py-2 w-full">
     <!-- Track Info -->
-    <div class="text-center">
-      <span class="song-title font-bold">Song Title</span> by
-      <span class="song-artist">Artist</span>
+    <div class="text-center" v-if="currentSong.modifiedName">
+      <span class="song-title font-bold">{{ currentSong.modifiedName }}</span> by
+      <span class="song-artist">{{ currentSong.displayName }}</span>
     </div>
     <div class="flex flex-nowrap gap-4 items-center">
       <!-- Play/Pause Button -->
-      <button type="button" @click.prevent="toggleAudio(this.songToPlay)">
+      <button type="button" @click.prevent="toggleAudio(this.currentSong)">
         <i
           class="fa text-gray-500 text-xl"
           :class="{ 'fa-play': !isPlaying, 'fa-pause': isPlaying }"
-        ></i>
+        />
       </button>
       <!-- Current Position -->
       <div class="player-currenttime">{{ seek }}</div>
       <!-- Scrub Container  -->
       <div class="w-full h-2 rounded bg-gray-200 relative cursor-pointer">
         <!-- Player Ball -->
-        <span class="absolute -top-2.5 -ml-2.5 text-gray-800 text-lg" style="left: 50%">
-          <i class="fas fa-circle"></i>
+        <span
+          class="absolute -top-2.5 -ml-2.5 text-gray-800 text-lg"
+          :style="{ left: playerProgress }"
+        >
+          <i class="fas fa-circle" />
         </span>
         <!-- Player Progress Bar-->
         <span
           class="block h-2 rounded bg-gradient-to-r from-green-500 to-green-400"
-          style="width: 50%"
+          :style="{ width: playerProgress }"
         ></span>
       </div>
       <!-- Duration -->
@@ -41,7 +44,14 @@ import usePlayerStore from '@/stores/Player/player.js'
 export default {
   name: 'MusicPlayer',
   computed: {
-    ...mapState(usePlayerStore, ['songToPlay', 'isPlaying', 'duration', 'seek'])
+    ...mapState(usePlayerStore, [
+      'currentSong',
+      'isPlaying',
+      'duration',
+      'seek',
+      'playerProgress',
+      'currentSong'
+    ])
   },
   methods: {
     ...mapActions(usePlayerStore, ['toggleAudio'])

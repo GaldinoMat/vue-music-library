@@ -28,7 +28,7 @@
       <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
         <span class="card-title">Songs</span>
         <!-- Icon -->
-        <i class="fa fa-headphones-alt float-right text-green-400 text-xl"></i>
+        <i class="fa fa-headphones-alt float-right text-green-400 text-xl" />
       </div>
       <!-- Playlist -->
       <ol id="playlist">

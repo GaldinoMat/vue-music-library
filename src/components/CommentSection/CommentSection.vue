@@ -4,7 +4,7 @@
       <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
         <!-- Comment Count -->
         <span class="card-title">Comments ({{ commentCount }})</span>
-        <i class="fa fa-comments float-right text-green-400 text-2xl"></i>
+        <i class="fa fa-comments float-right text-green-400 text-2xl" />
       </div>
       <slot />
     </div>

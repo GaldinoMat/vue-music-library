@@ -7,10 +7,19 @@
     <div class="container mx-auto flex items-center">
       <!-- Play/Pause Button -->
       <button
+        @click.prevent="checkAudioPlayState"
         type="button"
         class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full focus:outline-none"
       >
-        <i class="fas fa-play"></i>
+        <i
+          class="fas"
+          :class="{
+            'fa-play':
+              JSON.stringify(this.currentSong) !== JSON.stringify(this.song) || !this.isPlaying,
+            'fa-pause':
+              JSON.stringify(this.currentSong) === JSON.stringify(this.song) || this.isPlaying
+          }"
+        />
       </button>
       <div class="z-50 text-left ml-8">
         <!-- Song Info -->
@@ -23,12 +32,31 @@
 </template>
 
 <script>
+import usePlayerStore from '@/stores/Player/player.js'
+import { mapActions, mapState } from 'pinia'
+
 export default {
   name: 'MusicHeader',
   props: {
     song: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    ...mapState(usePlayerStore, ['isPlaying', 'currentSong', 'sound'])
+  },
+  methods: {
+    ...mapActions(usePlayerStore, ['startNewSong', 'toggleAudio']),
+    checkAudioPlayState() {
+      if (
+        Object.keys(this.currentSong).length === 0 ||
+        JSON.stringify(this.currentSong) !== JSON.stringify(this.song)
+      ) {
+        this.startNewSong(this.song)
+      } else {
+        this.toggleAudio()
+      }
     }
   }
 }

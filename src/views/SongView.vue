@@ -26,8 +26,6 @@ import CommentListItem from '@/components/CommentListItem/CommentListItem.vue'
 import MusicHeader from '@/components/MusicHeader/MusicHeader.vue'
 import CommentForm from '@/components/CommentForm/CommentForm.vue'
 import SortingComponent from '@/components/SortingComponent/SortingComponent.vue'
-import { mapWritableState } from 'pinia'
-import usePlayerStore from '@/stores/Player/player.js'
 
 export default {
   name: 'SongView',
@@ -46,7 +44,6 @@ export default {
     SortingComponent
   },
   computed: {
-    ...mapWritableState(usePlayerStore, ['songToPlay']),
     sortedComments() {
       return this.comments
         .slice()
@@ -71,8 +68,6 @@ export default {
 
     this.song = songSnapshot.data()
     this.getComments()
-
-    this.songToPlay = this.song
   },
   methods: {
     async getComments() {
