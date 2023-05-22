@@ -26,6 +26,7 @@
         <div class="text-3xl font-bold">{{ song.modifiedName }}</div>
         <div v-if="song.genre">{{ song.genre }}</div>
         <div v-else>None</div>
+        <div class="song-price">{{ $n(1, 'currency') }}</div>
       </div>
     </div>
   </section>

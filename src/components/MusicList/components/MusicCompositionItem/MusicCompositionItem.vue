@@ -17,23 +17,27 @@
       />
       <VeeForm :validationSchema="schema" :initial-values="songData" @submit="editMusic">
         <div class="mb-3">
-          <label class="inline-block mb-2">Song Title</label>
+          <label class="inline-block mb-2">
+            {{ $t('manage.editSongTitle') }}
+          </label>
           <VeeField
             type="text"
             name="SongTitle"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-            placeholder="Enter Song Title"
+            :placeholder="$t('manage.editSongTitlePlaceholder')"
             @input="updateFlag(true)"
           />
           <ErrorMessage class="text-red-600" name="SongTitle" />
         </div>
         <div class="mb-3">
-          <label class="inline-block mb-2">Genre</label>
+          <label class="inline-block mb-2">
+            {{ $t('manage.genre') }}
+          </label>
           <VeeField
             type="text"
             name="SongGenre"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-            placeholder="Enter Genre"
+            :placeholder="$t('manage.editGenrePlaceholder')"
             @input="updateFlag(true)"
           />
           <ErrorMessage class="text-red-600" name="SongGenre" />
@@ -43,7 +47,7 @@
           class="py-1.5 px-3 rounded text-white bg-green-600"
           :disabled="editInSubmission"
         >
-          Submit
+          {{ $t('manage.submit') }}
         </button>
         <button
           type="button"
@@ -51,7 +55,7 @@
           @click.prevent="resetCompositionItem"
           :disabled="editInSubmission"
         >
-          Go Back
+          {{ $t('manage.back') }}
         </button>
       </VeeForm>
     </div>

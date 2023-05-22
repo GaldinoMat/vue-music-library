@@ -21,7 +21,7 @@
     @dragleave.prevent.stop="changeDrag(false)"
     @drop.prevent.stop="uploadFile($event)"
   >
-    <h5>Drop your files here</h5>
+    <h5>{{ $t('manage.uploadDisclaimer') }}</h5>
   </div>
 </template>
 

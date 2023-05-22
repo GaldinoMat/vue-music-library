@@ -14,7 +14,9 @@
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
           <li>
-            <RouterLink class="px-2 text-white" :to="{ name: 'About' }">About</RouterLink>
+            <RouterLink class="px-2 text-white" :to="{ name: 'About' }">
+              {{ $t('header.about') }}
+            </RouterLink>
           </li>
           <li v-if="!userLoggedIn">
             <RouterLink
@@ -23,12 +25,14 @@
               @click.prevent="toggleAuthModal"
               exact-active-class="no-active"
             >
-              Login / Register
+              {{ $t('header.loginRegister') }}
             </RouterLink>
           </li>
           <template v-else>
             <li>
-              <RouterLink class="px-2 text-white" :to="{ name: 'Manage' }">Manage</RouterLink>
+              <RouterLink class="px-2 text-white" :to="{ name: 'Manage' }">
+                {{ $t('header.manage') }}
+              </RouterLink>
             </li>
             <li>
               <RouterLink
@@ -40,6 +44,13 @@
               </RouterLink>
             </li>
           </template>
+        </ul>
+        <ul class="ml-auto">
+          <li>
+            <a href="#" @click.prevent="changeLocale" class="text-white">
+              {{ currentLocale }}
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -75,7 +86,10 @@ export default {
     // ...mapStores(useModalStore),
     // Needs to pass both store and the state we want to use (same case with mapWritableState function)
     ...mapState(useUserStore, ['userLoggedIn']),
-    ...mapWritableState(useModalStore, ['isOpen'])
+    ...mapWritableState(useModalStore, ['isOpen']),
+    currentLocale() {
+      return this.$i18n.locale === 'pt' ? 'EN' : 'PT'
+    }
   },
   methods: {
     /**
@@ -90,6 +104,9 @@ export default {
         through dot notation 
       */
       this.isOpen = !this.isOpen
+    },
+    changeLocale() {
+      this.$i18n.locale = this.$i18n.locale === 'pt' ? 'en' : 'pt'
     }
   }
 }

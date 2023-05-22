@@ -1,0 +1,51 @@
+{
+  "home": {
+    "introductionHeader": "Escute suas músicas favoritas!",
+    "songs": "Músicas"
+  },
+  "header": {
+    "about": "Sobre",
+    "loginRegister": "Login / Registro",
+    "manage": "Administrar"
+  },
+  "song": {
+    "commentCount": "Sem comentários | 1 comentário | {count} comentários",
+    "commentPlaceholder": "Digite seu comentário aqui...",
+    "submit": "Comentar",
+    "latest": "Mais novo",
+    "oldest": "Mais velho"
+  },
+  "modal": {
+    "title": "Minha conta",
+    "register": "Registro"
+  },
+  "login": {
+    "emailPlaceholder": "Digite seu Email",
+    "password": "Senha",
+    "submit": "Entrar"
+  },
+  "register": {
+    "name": "Nome",
+    "age": "Idade",
+    "password": "Senha",
+    "passwordConfirmation": "Confirme a senha",
+    "country": "País",
+    "accept": "Eu aceito os {0}",
+    "tos": "Termos de uso",
+    "submit": "Registrar",
+    "namePlaceholder": "Digite seu Nome",
+    "emailPlaceholder": "Digite seu Email",
+    "passwordPlaceholder": "Digite sua Senha",
+    "passwordConfirmationPlaceholder": "Confirme sua Senha"
+  },
+  "manage": {
+    "title": "Minhas músicas",
+    "editSongTitle": "Título da música",
+    "editSongTitlePlaceholder": "Digite o Título da Música",
+    "genre": "Gênero",
+    "editGenrePlaceholder": "Digite o Gênero",
+    "submit": "Editar",
+    "back": "Voltar",
+    "uploadDisclaimer": "Arraste suas músicas aqui"
+  }
+}

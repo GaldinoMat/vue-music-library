@@ -6,6 +6,8 @@ import router from './router'
 import VeeValidatePlugin from './includes/validation'
 import { auth } from './includes/firebase'
 
+import i18n from '@/includes/i18n'
+
 import './assets/base.css'
 import './assets/main.css'
 
@@ -25,6 +27,7 @@ auth.onAuthStateChanged(() => {
       would like to provide the plugin
     */
     app.use(VeeValidatePlugin)
+    app.use(i18n)
 
     app.mount('#app')
   }

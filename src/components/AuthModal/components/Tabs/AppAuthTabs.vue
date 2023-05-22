@@ -21,7 +21,7 @@
           'hover:text-blue-600': tab === 'login'
         }"
         @click.prevent="onClickChangeTabs('register')"
-        >Register</a
+        >{{ $t('modal.register') }}</a
       >
     </li>
   </ul>
