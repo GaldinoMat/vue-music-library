@@ -8,8 +8,12 @@ import { auth } from './includes/firebase'
 
 import i18n from '@/includes/i18n'
 
+import { registerSW } from 'virtual:pwa-register'
+
 import './assets/base.css'
 import './assets/main.css'
+
+registerSW({ immediate: true })
 
 let app
 
