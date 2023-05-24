@@ -29,7 +29,7 @@
 import AppAuthFeedbackInfo from '../AuthModal/components/AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
 import { commentsCollection, auth } from '@/includes/firebase.js'
 import { mapState } from 'pinia'
-import userStore from '@/stores/user/user.js'
+import userStore from '@/stores/User/user.js'
 
 export default {
   name: 'CommentForm',
