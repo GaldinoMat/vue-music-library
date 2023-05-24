@@ -56,20 +56,22 @@ export default {
         )
     }
   },
-  async created() {
-    const songSnapshot = await songsCollection.doc(this.$route.params.id).get()
+  async beforeRouteEnter(to, from, next) {
+    const songSnapshot = await songsCollection.doc(to.params.id).get()
 
-    if (!songSnapshot.exists) {
-      this.$router.push({ name: 'Home' })
-      return
-    }
+    next((vm) => {
+      if (!songSnapshot.exists) {
+        vm.$router.push({ name: 'Home' })
+        return
+      }
 
-    const { sort } = this.$route.query
+      const { sort } = vm.$route.query
 
-    this.sort = sort === 'latest' || sort === 'oldest' ? sort : 'latest'
+      vm.sort = sort === 'latest' || sort === 'oldest' ? sort : 'latest'
 
-    this.song = songSnapshot.data()
-    this.getComments()
+      vm.song = songSnapshot.data()
+      vm.getComments()
+    })
   },
   methods: {
     async getComments() {

@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import AboutView from '@/views/AboutView.vue'
-import ManageView from '@/views/ManageView.vue'
-import SongView from '@/views/SongView.vue'
 
 import useUserStore from '@/stores/User/user.js'
+
+const HomeView = () => import('@/views/HomeView.vue')
+const AboutView = () => import('@/views/AboutView.vue')
+const ManageView = () => import('@/views/ManageView.vue')
+const SongView = () => import('@/views/SongView.vue')
 
 /** 
   Routes being passed to the router lib 
@@ -78,7 +79,7 @@ const router = createRouter({
   the function at some place in our application, finishing the guard's logic.
   Pay attention that this is used EVERY TIME the router is activated.
  
-  */
+*/
 router.beforeEach((to, from, next) => {
   if (!to.meta.requiresAuth) {
     next()
