@@ -28,12 +28,19 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,jpg,}']
       }
-    }),
+    })
     // visualizer({ open: true })
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  test: {
+    globals: true,
+    coverage: {
+      provider: 'istanbul',
+      reporter: ['html']
     }
   }
 })
