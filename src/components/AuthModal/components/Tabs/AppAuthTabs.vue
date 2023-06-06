@@ -8,7 +8,7 @@
           'hover:text-white text-white bg-blue-600': tab === 'login',
           'hover:text-blue-600': tab === 'register'
         }"
-        @click.prevent="onClickChangeTabs('login')"
+        @click.prevent="changeTab('login')"
         >Login</a
       >
     </li>
@@ -20,22 +20,21 @@
           'hover:text-white text-white bg-blue-600': tab === 'register',
           'hover:text-blue-600': tab === 'login'
         }"
-        @click.prevent="onClickChangeTabs('register')"
+        @click.prevent="changeTab('register')"
         >{{ $t('modal.register') }}</a
       >
     </li>
   </ul>
 </template>
 
-<script>
-export default {
-  name: 'AuthModalTabs',
-  props: { tab: String },
-  emits: ['changeModalTabs'],
-  methods: {
-    onClickChangeTabs(modalTab) {
-      this.$emit('changeModalTabs', modalTab)
-    }
-  }
+<script setup>
+const emit = defineEmits(['change-modal-tabs'])
+
+const changeTab = (tab) => {
+  emit('change-modal-tabs', tab)
 }
+
+const props = defineProps({
+  tab: String
+})
 </script>

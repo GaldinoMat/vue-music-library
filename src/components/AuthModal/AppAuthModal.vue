@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed z-10 inset-0 overflow-y-auto" id="modal" :class="hiddenClass">
+  <div class="fixed z-10 inset-0 overflow-y-auto" id="modal" :class="store.hiddenClass">
     <div
       class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
     >
@@ -19,13 +19,13 @@
           <div class="flex justify-between items-center pb-4">
             <p class="text-2xl font-bold">{{ $t('modal.title') }}</p>
             <!-- Modal Close Button -->
-            <div class="modal-close cursor-pointer z-50" @click="modalVisibility = false">
+            <div class="modal-close cursor-pointer z-50" @click="openModal">
               <i class="fas fa-times" />
             </div>
           </div>
 
           <!-- Tabs -->
-          <AppAuthTabs :tab="tab" @changeModalTabs="changeModalTabs" />
+          <AppAuthTabs :tab="tab" @change-modal-tabs="changeModalTabs" />
 
           <!-- Login Form -->
           <AppAuthLogin v-if="tab === 'login'" />
@@ -38,39 +38,24 @@
   </div>
 </template>
 
-<script>
-import { mapWritableState } from 'pinia'
+<script setup>
+import { ref } from 'vue'
 import useModalStore from '@/stores/Modal/modal'
 import AppAuthTabs from './components/Tabs/AppAuthTabs.vue'
 import AppAuthLogin from './components/LoginForm/AppAuthLoginForm.vue'
 import AppAuthRegister from './components/RegistrationForm/AppAuthRegistrationForm.vue'
 
-export default {
-  name: 'AuthModal',
-  data() {
-    return {
-      tab: 'login'
-    }
-  },
-  computed: {
-    /** 
-      In this case, since we want to use the store's methods, we need to pass the methods name 
-      to the function's second argument, inside an array.
-    */
-    ...mapWritableState(useModalStore, {
-      modalVisibility: 'isOpen',
-      hiddenClass: 'hiddenClass'
-    })
-  },
-  components: {
-    AppAuthTabs,
-    AppAuthLogin,
-    AppAuthRegister
-  },
-  methods: {
-    changeModalTabs(modalTab) {
-      this.tab = modalTab
-    }
-  }
+const store = useModalStore()
+
+let tab = ref('login')
+
+const changeModalTabs = (modalTab) => {
+  tab.value = modalTab
+}
+
+const openModal = () => {
+  store.$patch({
+    isOpen: false
+  })
 }
 </script>

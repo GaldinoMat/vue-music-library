@@ -32,9 +32,9 @@
           <i class="fa fa-headphones-alt float-right text-green-400 text-xl" />
         </div>
         <!-- Playlist -->
-        <ol id="playlist">
+        <!-- <ol id="playlist">
           <SongPlaylistItem v-for="song in songs" :key="song.docId" :song="song" />
-        </ol>
+        </ol> -->
         <!-- .. end Playlist -->
       </div>
     </section>

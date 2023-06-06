@@ -1,12 +1,9 @@
 <template>
   <!-- Header -->
   <AppHeader />
-
   <slot />
-
   <!-- Player -->
   <MusicPlayer />
-
   <!-- Auth Modal -->
   <AppAuthModal />
 </template>
