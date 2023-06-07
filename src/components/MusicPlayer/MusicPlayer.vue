@@ -37,24 +37,10 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from 'pinia'
+<script setup>
 import usePlayerStore from '@/stores/Player/player.js'
 
-export default {
-  name: 'MusicPlayer',
-  computed: {
-    ...mapState(usePlayerStore, [
-      'currentSong',
-      'isPlaying',
-      'duration',
-      'seek',
-      'playerProgress',
-      'currentSong'
-    ])
-  },
-  methods: {
-    ...mapActions(usePlayerStore, ['toggleAudio', 'updateSeek'])
-  }
-}
+const { currentSong, isPlaying, duration, seek, playerProgress } = usePlayerStore()
+
+const { toggleAudio, updateSeek } = usePlayerStore()
 </script>

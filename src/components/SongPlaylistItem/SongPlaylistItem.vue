@@ -7,7 +7,7 @@
       <RouterLink
         :to="{ name: 'song', params: { id: song.docId } }"
         class="font-bold block text-gray-600 composition-name"
-        :id="SongName"
+        :id="`SongName`"
       >
         {{ song.modifiedName }}
       </RouterLink>
@@ -29,17 +29,13 @@
   </li>
 </template>
 
-<script>
+<script setup>
 import { RouterLink } from 'vue-router'
 
-export default {
-  name: 'SongItem',
-  props: {
-    song: {
-      type: Object,
-      required: true
-    }
-  },
-  components: { RouterLink }
-}
+const props = defineProps({
+  song: {
+    type: Object,
+    required: true
+  }
+})
 </script>

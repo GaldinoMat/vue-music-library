@@ -8,27 +8,18 @@
   </AppLayout>
 </template>
 
-<script>
+<script setup>
 import useUserStore from './stores/User/user'
 import { auth } from '@/includes/firebase'
 import AppLayout from '@/components/Layout/AppLayout.vue'
-
-export default {
-  name: 'App',
-  setup() {
-    ;(function () {
-      if (auth.currentUser) {
-        const store = useUserStore()
-        store.$patch({
-          userLoggedIn: true
-        })
-      }
-    })()
-  },
-  components: {
-    AppLayout
+;(function () {
+  if (auth.currentUser) {
+    const store = useUserStore()
+    store.$patch({
+      userLoggedIn: true
+    })
   }
-}
+})()
 </script>
 
 <style>

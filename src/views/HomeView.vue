@@ -32,83 +32,73 @@
           <i class="fa fa-headphones-alt float-right text-green-400 text-xl" />
         </div>
         <!-- Playlist -->
-        <!-- <ol id="playlist">
+        <ol id="playlist">
           <SongPlaylistItem v-for="song in songs" :key="song.docId" :song="song" />
-        </ol> -->
-        <!-- .. end Playlist -->
+        </ol>
+        <!-- end Playlist -->
       </div>
     </section>
   </main>
 </template>
 
-<script>
+<script setup>
+import { onBeforeUnmount, reactive, ref } from 'vue'
 import { songsCollection } from '@/includes/firebase.js'
 import SongPlaylistItem from '@/components/SongPlaylistItem/SongPlaylistItem.vue'
 
-export default {
-  name: 'HomeView',
-  data() {
-    return {
-      songs: [],
-      maxPerPage: 25,
-      pendingReq: false
+const songs = reactive([])
+const maxPerPage = ref(25)
+let pendingReq = ref(false)
+
+const getSongs = async () => {
+  if (pendingReq.value) return
+
+  pendingReq.value = true
+
+  let songsSnapshots
+  try {
+    if (songs.length) {
+      const lastDoc = await songsCollection.doc(songs[songs.length - 1].docId).get()
+      songsSnapshots = await songsCollection
+        .orderBy('modifiedName')
+        .startAfter(lastDoc)
+        .limit(maxPerPage.value)
+        .get()
+    } else {
+      songsSnapshots = await songsCollection.orderBy('modifiedName').limit(maxPerPage.value).get()
     }
-  },
-  components: {
-    SongPlaylistItem
-  },
-  methods: {
-    async getSongs() {
-      if (this.pendingReq) return
+  } catch (error) {
+    console.error('Error while fetching songs. Please, try again later')
+  }
 
-      this.pendingReq = true
+  songsSnapshots.forEach((song) => {
+    songs.push({
+      docId: song.id,
+      ...song.data()
+    })
+  })
 
-      let songsSnapshots
-      try {
-        if (this.songs.length) {
-          const lastDoc = await songsCollection.doc(this.songs[this.songs.length - 1].docId).get()
-          songsSnapshots = await songsCollection
-            .orderBy('modifiedName')
-            .startAfter(lastDoc)
-            .limit(this.maxPerPage)
-            .get()
-        } else {
-          songsSnapshots = await songsCollection
-            .orderBy('modifiedName')
-            .limit(this.maxPerPage)
-            .get()
-        }
-      } catch (error) {
-        console.error('Error while fetching songs. Please, try again later')
-      }
+  pendingReq.value = false
+}
 
-      songsSnapshots.forEach((song) => {
-        this.songs.push({
-          docId: song.id,
-          ...song.data()
-        })
-      })
+const handleScroll = () => {
+  const { scrollTop, offsetHeight } = document.documentElement
+  const { innerHeight } = window
 
-      this.pendingReq = false
-    },
-    handleScroll() {
-      const { scrollTop, offsetHeight } = document.documentElement
-      const { innerHeight } = window
+  const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight
 
-      const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight
-
-      if (bottomOfWindow) {
-        this.getSongs()
-      }
-    }
-  },
-  async created() {
-    await this.getSongs()
-
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
+  if (bottomOfWindow) {
+    getSongs()
   }
 }
+
+;(async function () {
+  await getSongs()
+
+  window.addEventListener('scroll', handleScroll)
+})()
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
