@@ -2,6 +2,8 @@
 
 This application was created with the intention of learning about the Vue framework and its implementations. It serves as a practical exploration of both the older Options API and the newer Composition API. By initially building the app using the Options API and later updating it to utilize the Composition API, the project serves as a valuable learning resource for developers interested in understanding the transition between these two approaches.
 
+Deployment Link [here](https://vue-music-library.vercel.app/)
+
 ## Key Technologies Used
 
 - **Vite**: The app is compiled and bundled using Vite, which provides a fast and efficient development experience.
