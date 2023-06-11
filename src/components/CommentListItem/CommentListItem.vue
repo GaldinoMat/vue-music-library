@@ -12,14 +12,11 @@
   </li>
 </template>
 
-<script>
-export default {
-  name: 'CommentListItem',
-  props: {
-    comment: {
-      type: Object,
-      required: true
-    }
+<script setup>
+const props = defineProps({
+  comment: {
+    type: Object,
+    required: true
   }
-}
+})
 </script>

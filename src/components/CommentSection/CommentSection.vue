@@ -4,7 +4,7 @@
       <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
         <!-- Comment Count -->
         <span class="card-title">{{
-          $tc('song.commentCount', commentCount, { count: commentCount })
+          $t('song.commentCount', commentCount, { count: commentCount })
         }}</span>
         <i class="fa fa-comments float-right text-green-400 text-2xl" />
       </div>
@@ -13,14 +13,11 @@
   </section>
 </template>
 
-<script>
-export default {
-  name: 'CommentSection',
-  props: {
-    commentCount: {
-      type: undefined,
-      required: true
-    }
+<script setup>
+const props = defineProps({
+  commentCount: {
+    type: undefined,
+    required: true
   }
-}
+})
 </script>

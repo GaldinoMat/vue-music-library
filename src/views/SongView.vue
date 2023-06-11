@@ -5,9 +5,9 @@
     <!-- Comments -->
     <CommentSection :commentCount="song.commentCount">
       <!-- Form -->
-      <CommentForm :getComments="getComments" @updateSongCommentsDb="updateSongCommentsDb">
+      <CommentForm :getComments="getComments" @update-song-comments-db="updateSongCommentsDb">
         <!-- Sort Comments -->
-        <SortingComponent @changeSort="changeSort" />
+        <SortingComponent @change-sort="changeSort" />
       </CommentForm>
     </CommentSection>
     <!-- Comments -->
@@ -21,7 +21,9 @@
   </main>
 </template>
 
-<script>
+<script setup>
+import { computed, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { songsCollection, commentsCollection } from '@/includes/firebase.js'
 import CommentSection from '@/components/CommentSection/CommentSection.vue'
 import CommentListItem from '@/components/CommentListItem/CommentListItem.vue'
@@ -29,89 +31,72 @@ import MusicHeader from '@/components/MusicHeader/MusicHeader.vue'
 import CommentForm from '@/components/CommentForm/CommentForm.vue'
 import SortingComponent from '@/components/SortingComponent/SortingComponent.vue'
 
-export default {
-  name: 'SongView',
-  data() {
+let song = reactive({})
+let comments = reactive([])
+let sort = ref('latest')
+
+const route = useRoute()
+const router = useRouter()
+
+const sortedComments = computed(() => {
+  return comments
+    .slice()
+    .sort((a, b) =>
+      sort.value === 'latest'
+        ? new Date(b.datePosted) - new Date(a.datePosted)
+        : new Date(a.datePosted) - new Date(b.datePosted)
+    )
+})
+
+const getComments = async () => {
+  const commentsSnapshot = await commentsCollection.where('songId', '==', route.params.id).get()
+
+  const newComments = commentsSnapshot.docs.map((comment) => {
     return {
-      song: {},
-      comments: [],
-      sort: 'latest'
+      commentId: comment.id,
+      ...comment.data()
     }
-  },
-  components: {
-    CommentSection,
-    CommentListItem,
-    MusicHeader,
-    CommentForm,
-    SortingComponent
-  },
-  computed: {
-    sortedComments() {
-      return this.comments
-        .slice()
-        .sort((a, b) =>
-          this.sort === 'latest'
-            ? new Date(b.datePosted) - new Date(a.datePosted)
-            : new Date(a.datePosted) - new Date(b.datePosted)
-        )
-    }
-  },
-  async beforeRouteEnter(to, from, next) {
-    const songSnapshot = await songsCollection.doc(to.params.id).get()
+  })
 
-    next((vm) => {
-      if (!songSnapshot.exists) {
-        vm.$router.push({ name: 'Home' })
-        return
-      }
-
-      const { sort } = vm.$route.query
-
-      vm.sort = sort === 'latest' || sort === 'oldest' ? sort : 'latest'
-
-      vm.song = songSnapshot.data()
-      vm.getComments()
-    })
-  },
-  methods: {
-    async getComments() {
-      const commentsSnapshot = await commentsCollection
-        .where('songId', '==', this.$route.params.id)
-        .get()
-
-      this.comments = []
-
-      commentsSnapshot.forEach((comment) => {
-        this.comments.push({
-          commentId: comment.id,
-          ...comment.data()
-        })
-      })
-    },
-    changeSort(newValue) {
-      this.sort = newValue
-    },
-    async updateSongCommentsDb() {
-      this.song.commentCount += 1
-
-      console.log(this.song.commentCount)
-
-      await songsCollection.doc(this.$route.params.id).update({
-        commentCount: this.song.commentCount
-      })
-    }
-  },
-  // This special function watches for a change in a specific state and runs logic accordingly
-  watch: {
-    sort(newValue) {
-      if (newValue === this.$route.query.sort) return
-
-      this.$router.push({
-        query: {
-          sort: newValue
-        }
-      })
-    }
-  }
+  Object.assign(comments, newComments)
 }
+const changeSort = (newValue) => {
+  sort.value = newValue
+}
+const updateSongCommentsDb = async () => {
+  song.commentCount += 1
+
+  await songsCollection.doc(route.params.id).update({
+    commentCount: song.commentCount
+  })
+}
+
+;(async function () {
+  const songSnapshot = await songsCollection.doc(route.params.id).get()
+
+  if (!songSnapshot.exists) {
+    router.push({ name: 'Home' })
+    return
+  }
+
+  let { sort } = route.query
+
+  sort = sort === 'latest' || sort === 'oldest' ? sort : 'latest'
+
+  Object.assign(song, songSnapshot.data())
+  await getComments()
+})()
+
+watch(
+  () => sort.value,
+  (newValue) => {
+    if (newValue === route.query.sort) return
+
+    router.push({
+      query: {
+        sort: newValue
+      }
+    })
+  }
+)
 </script>
