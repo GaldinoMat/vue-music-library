@@ -31,61 +31,48 @@
   </main>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import MusicUpload from '@/components/MusicUpload/MusicUpload.vue'
 import MusicList from '@/components/MusicList/MusicList.vue'
 import MusicCompositionItem from '@/components/MusicList/components/MusicCompositionItem/MusicCompositionItem.vue'
 import { songsCollection, auth } from '@/includes/firebase.js'
 
-export default {
-  name: 'ManageView',
-  components: {
-    MusicUpload,
-    MusicList,
-    MusicCompositionItem
-  },
-  data() {
-    return {
-      songs: [],
-      unsaved: false
-    }
-  },
-  methods: {
-    updateSong(index, values) {
-      this.songs[index].modifiedName = values.SongTitle
-      this.songs[index].genre = values.SongGenre
-    },
-    removeSong(index) {
-      this.songs.splice(index, 1)
-    },
-    addSong(document) {
-      const song = {
-        ...document.data(),
-        docId: document.id
-      }
+const songs = reactive([])
+let unsaved = ref(false)
 
-      this.songs.push(song)
-    },
-    updateFlag(value) {
-      this.unsaved = value
-    }
-  },
-  async created() {
-    const snapshot = await songsCollection.where('uid', '==', auth.currentUser.uid).get()
-
-    snapshot.forEach(this.addSong)
-  },
-  /**
-    This is a Navigation guard for components. Contrary to the ohter two possibilities,
-    this one has access to the components instance.
-  */
-  beforeRouteLeave(to, from, next) {
-    if (!this.unsaved) {
-      next()
-    } else {
-      const leave = confirm('You have unchanged changes. Are you sure you want to leave the page?')
-      next(leave)
-    }
-  }
+const updateSong = (index, values) => {
+  songs[index].modifiedName = values.SongTitle
+  songs[index].genre = values.SongGenre
 }
+const removeSong = (index) => {
+  songs.splice(index, 1)
+}
+const addSong = (document) => {
+  const song = {
+    ...document.data(),
+    docId: document.id
+  }
+
+  songs.push(song)
+}
+const updateFlag = (value) => {
+  unsaved.value = value
+}
+
+;(async function () {
+  const snapshot = await songsCollection.where('uid', '==', auth.currentUser.uid).get()
+
+  snapshot.forEach(addSong)
+})()
+
+onBeforeRouteLeave((to, from, next) => {
+  if (!unsaved.value) {
+    next()
+  } else {
+    const leave = confirm('You have unchanged changes. Are you sure you want to leave the page?')
+    next(leave)
+  }
+})
 </script>

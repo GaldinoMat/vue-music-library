@@ -25,18 +25,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'DragComponent',
-  props: {
-    isDraggedOver: Boolean,
-    uploadFile: Function
-  },
-  emits: ['changeDragState'],
-  methods: {
-    changeDrag(changeBool) {
-      this.$emit('changeDragState', changeBool)
-    }
-  }
+<script setup>
+const props = defineProps({
+  isDraggedOver: Boolean,
+  uploadFile: Function
+})
+
+const emit = defineEmits(['change-drag-state'])
+
+const changeDrag = (changeBool) => {
+  emit('change-drag-state', changeBool)
 }
 </script>

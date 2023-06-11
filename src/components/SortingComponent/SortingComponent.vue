@@ -8,14 +8,10 @@
   </select>
 </template>
 
-<script>
-export default {
-  name: 'SortingComponent',
-  emits: ['changeSort'],
-  methods: {
-    onChange(sortValue) {
-      this.$emit('changeSort', sortValue)
-    }
-  }
+<script setup>
+const emit = defineEmits(['change-sort'])
+
+const onChange = (sortValue) => {
+  emit('change-sort', sortValue)
 }
 </script>

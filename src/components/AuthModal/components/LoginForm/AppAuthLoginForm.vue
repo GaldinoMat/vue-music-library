@@ -37,50 +37,41 @@
   </VeeForm>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import AppAuthFeedbackInfo from '../AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
-import { mapActions } from 'pinia'
 import useUserStore from '@/stores/User/user'
 
-export default {
-  name: 'LoginForm',
-  data() {
-    return {
-      schema: {
-        email: 'required|min:3|max:100|email',
-        password: 'required|min:9|max:100|exclude:password'
-      },
-      loginInProgress: false,
-      loginShowAlert: false,
-      loginAlertVariant: '',
-      loginAlertMessage: ''
-    }
-  },
-  components: {
-    AppAuthFeedbackInfo
-  },
-  methods: {
-    ...mapActions(useUserStore, ['authenticate']),
-    async login(values) {
-      this.loginShowAlert = true
-      this.loginInProgress = true
-      this.loginAlertVariant = 'bg-blue-500'
-      this.loginAlertMessage = 'Logging you in.'
+const schema = {
+  email: 'required|min:3|max:100|email',
+  password: 'required|min:9|max:100|exclude:password'
+}
 
-      try {
-        await this.authenticate(values)
-      } catch (error) {
-        this.loginInProgress = false
-        this.loginAlertVariant = 'bg-red-500'
-        this.loginAlertMessage = 'Invalid login details.'
+let loginInProgress = ref(false)
+let loginShowAlert = ref(false)
+let loginAlertVariant = ref('')
+let loginAlertMessage = ref('')
 
-        return
-      }
+const { authenticate } = useUserStore()
 
-      this.loginAlertVariant = 'bg-green-500'
-      this.loginAlertMessage = 'You are logged in.'
-      window.location.reload()
-    }
+const login = async (values) => {
+  loginShowAlert.value = true
+  loginInProgress.value = true
+  loginAlertVariant.value = 'bg-blue-500'
+  loginAlertMessage.value = 'Logging you in.'
+
+  try {
+    await authenticate(values)
+  } catch (error) {
+    loginInProgress.value = false
+    loginAlertVariant.value = 'bg-red-500'
+    loginAlertMessage.value = 'Invalid login details.'
+
+    return
   }
+
+  loginAlertVariant.value = 'bg-green-500'
+  loginAlertMessage.value = 'You are logged in.'
+  window.location.reload()
 }
 </script>

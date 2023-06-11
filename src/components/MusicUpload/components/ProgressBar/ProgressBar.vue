@@ -17,11 +17,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'UploadProgressBar',
-  props: {
-    uploads: Array
-  }
-}
+<script setup>
+const props = defineProps({
+  uploads: Array
+})
 </script>

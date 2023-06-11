@@ -8,26 +8,18 @@
   </AppLayout>
 </template>
 
-<script>
-import { mapWritableState } from 'pinia'
+<script setup>
 import useUserStore from './stores/User/user'
 import { auth } from '@/includes/firebase'
 import AppLayout from '@/components/Layout/AppLayout.vue'
-
-export default {
-  name: 'App',
-  components: {
-    AppLayout
-  },
-  computed: {
-    ...mapWritableState(useUserStore, ['userLoggedIn'])
-  },
-  created() {
-    if (auth.currentUser) {
-      this.userLoggedIn = true
-    }
+;(function () {
+  if (auth.currentUser) {
+    const store = useUserStore()
+    store.$patch({
+      userLoggedIn: true
+    })
   }
-}
+})()
 </script>
 
 <style>

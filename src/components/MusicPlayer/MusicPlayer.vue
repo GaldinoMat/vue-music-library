@@ -37,24 +37,15 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from 'pinia'
+<script setup>
 import usePlayerStore from '@/stores/Player/player.js'
+import { computed } from 'vue'
 
-export default {
-  name: 'MusicPlayer',
-  computed: {
-    ...mapState(usePlayerStore, [
-      'currentSong',
-      'isPlaying',
-      'duration',
-      'seek',
-      'playerProgress',
-      'currentSong'
-    ])
-  },
-  methods: {
-    ...mapActions(usePlayerStore, ['toggleAudio', 'updateSeek'])
-  }
-}
+const currentSong = computed(() => usePlayerStore().currentSong)
+const isPlaying = computed(() => usePlayerStore().isPlaying)
+const duration = computed(() => usePlayerStore().duration)
+const seek = computed(() => usePlayerStore().seek)
+const playerProgress = computed(() => usePlayerStore().playerProgress)
+
+const { toggleAudio, updateSeek } = usePlayerStore()
 </script>

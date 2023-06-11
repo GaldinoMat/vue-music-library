@@ -62,96 +62,90 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref } from 'vue'
 import AppAuthFeedbackInfo from '../../../AuthModal/components/AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
 import { songsCollection, storage } from '@/includes/firebase.js'
 
-export default {
-  name: 'MusicCompositionItem',
-  data() {
-    return {
-      showForm: false,
-      schema: {
-        SongTitle: 'required',
-        SongGenre: 'alphaSpaces'
-      },
-      songData: {
-        SongTitle: this.song.modifiedName,
-        SongGenre: this.song.genre
-      },
-      editInSubmission: false,
-      editShowAlert: false,
-      editAlertVariant: '',
-      editAlertMessage: ''
-    }
+const props = defineProps({
+  song: {
+    type: Object,
+    required: true
   },
-  props: {
-    song: {
-      type: Object,
-      required: true
-    },
-    index: {
-      type: Number,
-      required: true
-    },
-    updateSong: {
-      type: Function,
-      required: true
-    },
-    removeSong: {
-      type: Function,
-      required: true
-    },
-    updateFlag: {
-      type: Function,
-      required: true
-    }
+  index: {
+    type: Number,
+    required: true
   },
-  components: { AppAuthFeedbackInfo },
-  methods: {
-    async editMusic(values) {
-      this.editInSubmission = true
-      this.editShowAlert = true
-      this.editAlertVariant = 'bg-blue-500'
-      this.editAlertMessage = 'Please wait! Updating song info.'
-
-      try {
-        await songsCollection.doc(this.song.docId).update({
-          modifiedName: values.SongTitle,
-          genre: values.SongGenre
-        })
-      } catch (error) {
-        this.editInSubmission = false
-        this.editShowAlert = false
-        this.editAlertVariant = 'bg-red-500'
-        this.editAlertMessage = 'Something went wrong! Please try again later.'
-
-        console.error(error)
-
-        return
-      }
-
-      this.updateSong(this.index, values)
-      this.updateFlag(false)
-
-      this.editInSubmission = false
-      this.editAlertVariant = 'bg-green-500'
-      this.editAlertMessage = 'Success!'
-    },
-    async deleteSong() {
-      const storageRef = storage.ref()
-      const songRef = storageRef.child(`songs/${this.song.originalName}`)
-
-      await songRef.delete()
-
-      await songsCollection.doc(this.song.docId).delete()
-
-      this.removeSong(this.index)
-    },
-    resetCompositionItem() {
-      this.showForm = false
-      this.editShowAlert = false
-    }
+  updateSong: {
+    type: Function,
+    required: true
+  },
+  removeSong: {
+    type: Function,
+    required: true
+  },
+  updateFlag: {
+    type: Function,
+    required: true
   }
+})
+
+let showForm = ref(false)
+const schema = {
+  SongTitle: 'required',
+  SongGenre: 'alphaSpaces'
+}
+const songData = reactive({
+  SongTitle: props.song.modifiedName,
+  SongGenre: props.song.genre
+})
+
+let editInSubmission = ref(false)
+let editShowAlert = ref(false)
+let editAlertVariant = ref('')
+let editAlertMessage = ref('')
+
+const editMusic = async (values) => {
+  editInSubmission.value = true
+  editShowAlert.value = true
+  editAlertVariant.value = 'bg-blue-500'
+  editAlertMessage.value = 'Please wait! Updating song info.'
+
+  try {
+    await songsCollection.doc(props.song.docId).update({
+      modifiedName: values.SongTitle,
+      genre: values.SongGenre
+    })
+  } catch (error) {
+    editInSubmission.value = false
+    editShowAlert.value = false
+    editAlertVariant.value = 'bg-red-500'
+    editAlertMessage.value = 'Something went wrong! Please try again later.'
+
+    console.error(error)
+
+    return
+  }
+
+  props.updateSong(props.index, values)
+  props.updateFlag(false)
+
+  editInSubmission = false
+  editAlertVariant = 'bg-green-500'
+  editAlertMessage = 'Success!'
+}
+const deleteSong = async () => {
+  const storageRef = storage.ref()
+  const songRef = storageRef.child(`songs/${song.originalName}`)
+
+  await songRef.delete()
+
+  await songsCollection.doc(song.docId).delete()
+
+  props.removeSong(props.index)
+}
+const resetCompositionItem = () => {
+  showForm.value = false
+  editShowAlert.value = false
 }
 </script>

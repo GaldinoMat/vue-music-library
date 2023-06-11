@@ -101,62 +101,52 @@
   </VeeForm>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import AppAuthFeedbackInfo from '../AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
-import { mapActions } from 'pinia'
 import useUserStore from '@/stores/User/user'
 
-export default {
-  name: 'RegisterForm',
-  data() {
-    return {
-      schema: {
-        name: 'required|min:3|max:100|alphaSpaces',
-        email: 'required|min:3|max:100|email',
-        age: 'required|minValue:18|maxValue: 300',
-        password: 'required|min:9|max:100|exclude:password',
-        confirmPassword: 'passwordMismatch:@password',
-        country: 'required|countryExclude:Antarctica',
-        tos: 'tos'
-      },
-      userData: {
-        country: 'USA'
-      },
-      registerInProgress: false,
-      registerShowAlert: false,
-      registerAlertVariant: '',
-      registerAlertMessage: ''
-    }
-  },
-  components: {
-    AppAuthFeedbackInfo
-  },
-  methods: {
-    ...mapActions(useUserStore, {
-      createUser: 'register'
-    }),
-    async register(values) {
-      this.registerShowAlert = true
-      this.registerInProgress = true
-      this.registerAlertVariant = 'bg-blue-500'
-      this.registerAlertMessage = 'Please wait, your account is being created.'
+const schema = {
+  name: 'required|min:3|max:100|alphaSpaces',
+  email: 'required|min:3|max:100|email',
+  age: 'required|minValue:18|maxValue: 300',
+  password: 'required|min:9|max:100|exclude:password',
+  confirmPassword: 'passwordMismatch:@password',
+  country: 'required|countryExclude:Antarctica',
+  tos: 'tos'
+}
 
-      try {
-        await this.createUser(values)
-      } catch (error) {
-        this.registerInProgress = false
-        this.registerAlertVariant = 'bg-red-500'
-        this.registerAlertMessage = 'An unexpected error occured. Please, try again.'
+const userData = {
+  country: 'USA'
+}
 
-        console.error(error)
+let registerInProgress = ref(false)
+let registerShowAlert = ref(false)
+let registerAlertVariant = ref('')
+let registerAlertMessage = ref('')
 
-        return
-      }
+const { register: createUser } = useUserStore()
 
-      this.registerAlertVariant = 'bg-green-500'
-      this.registerAlertMessage = 'Account created succesfully'
-      window.location.reload()
-    }
+const register = async (values) => {
+  registerShowAlert.value = true
+  registerInProgress.value = true
+  registerAlertVariant.value = 'bg-blue-500'
+  registerAlertMessage.value = 'Please wait, your account is being created.'
+
+  try {
+    await createUser(values)
+  } catch (error) {
+    registerInProgress.value = false
+    registerAlertVariant.value = 'bg-red-500'
+    registerAlertMessage.value = 'An unexpected error occured. Please, try again.'
+
+    console.error(error)
+
+    return
   }
+
+  registerAlertVariant.value = 'bg-green-500'
+  registerAlertMessage.value = 'Account created succesfully'
+  window.location.reload()
 }
 </script>

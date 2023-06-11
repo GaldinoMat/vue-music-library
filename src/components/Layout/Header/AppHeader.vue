@@ -18,7 +18,7 @@
               {{ $t('header.about') }}
             </RouterLink>
           </li>
-          <li v-if="!userLoggedIn">
+          <li v-if="!isUserLoggedIn">
             <RouterLink
               class="px-2 text-white"
               :to="{ name: 'Home' }"
@@ -57,57 +57,29 @@
   </header>
 </template>
 
-<script>
-/**
-  The mapStores function is important to register/use stores and their data in the Options API,
-  be it state or methods.
-  On the other hand, if you only need to access or modify state using methods from the component
-  you can use the mapState or mapWritableState functions to register the store.
-  The mapState function turn the state into a readonly variable, so it can not be modified.
-  The mapWritableState function lets us modify the State as much as we want.
-  The mapActions function lets us implements the action methods defined inside our store that helps us 
-  handle and mutate the global state contained inside each store.
-*/
-import {
-  mapState,
-  mapActions,
-  mapWritableState
-  // mapStores,
-  // mapWritableState
-} from 'pinia'
+<script setup>
+import { computed } from 'vue'
 import useModalStore from '@/stores/Modal/modal.js'
 import useUserStore from '@/stores/User/user.js'
+import { useI18n } from 'vue-i18n'
 
-export default {
-  name: 'AppHeader',
-  // Registers stores to be used
-  computed: {
-    // Needs to pass only the store
-    // ...mapStores(useModalStore),
-    // Needs to pass both store and the state we want to use (same case with mapWritableState function)
-    ...mapState(useUserStore, ['userLoggedIn']),
-    ...mapWritableState(useModalStore, ['isOpen']),
-    currentLocale() {
-      return this.$i18n.locale === 'pt' ? 'EN' : 'PT'
-    }
-  },
-  methods: {
-    /**
-      Needs to pass both store and the function we want to use
-      In this case, since actions can be asynchronous, we need to pass mapActions inside the methods
-      object. 
-    */
-    ...mapActions(useUserStore, ['logout']),
-    toggleAuthModal() {
-      /** 
-        If we use the mapState functions, we can simply use the property without calling the store 
-        through dot notation 
-      */
-      this.isOpen = !this.isOpen
-    },
-    changeLocale() {
-      this.$i18n.locale = this.$i18n.locale === 'pt' ? 'en' : 'pt'
-    }
-  }
+const { locale } = useI18n({ useScope: 'global' })
+
+const currentLocale = computed(() => (locale.value === 'pt' ? 'EN' : 'PT'))
+
+const changeLocale = () => {
+  locale.value = locale.value === 'pt' ? 'en' : 'pt'
+}
+
+const { logout } = useUserStore()
+
+const isUserLoggedIn = computed(() => useUserStore().userLoggedIn)
+
+const toggleAuthModal = () => {
+  const store = useModalStore()
+  const { isOpen } = store
+  store.$patch({
+    isOpen: !isOpen
+  })
 }
 </script>

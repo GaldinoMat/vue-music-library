@@ -25,72 +25,66 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import AppAuthFeedbackInfo from '../AuthModal/components/AuthFeedbackInfo/AppAuthFeedbackInfo.vue'
 import { commentsCollection, auth } from '@/includes/firebase.js'
-import { mapState } from 'pinia'
 import userStore from '@/stores/User/user.js'
 
-export default {
-  name: 'CommentForm',
-  data() {
-    return {
-      schema: {
-        comment: 'required|min:3'
-      },
-      commentInProgress: false,
-      commentShowAlert: false,
-      commentAlertVariant: '',
-      commentAlertMessage: ''
-    }
-  },
-  emits: ['updateSongCommentsDb'],
-  props: {
-    getComments: {
-      type: Function,
-      required: true
-    }
-  },
-  components: { AppAuthFeedbackInfo },
-  computed: {
-    ...mapState(userStore, ['userLoggedIn'])
-  },
-  methods: {
-    async submitComment(values, { resetForm }) {
-      this.commentShowAlert = true
-      this.commentInProgress = true
-      this.commentAlertVariant = 'bg-blue-500'
-      this.commentAlertMessage = 'Please wait, your comment is being created.'
-
-      try {
-        const comment = {
-          content: values.comment,
-          datePosted: new Date().toString(),
-          songId: this.$route.params.id,
-          authorName: auth.currentUser.displayName,
-          uid: auth.currentUser.uid
-        }
-
-        await commentsCollection.add(comment)
-      } catch (error) {
-        this.commentInProgress = false
-        this.commentAlertVariant = 'bg-red-500'
-        this.commentAlertMessage = 'An unexpected error occured. Please, try again.'
-
-        console.error(error)
-
-        return
-      }
-      this.$emit('updateSongCommentsDb')
-
-      this.getComments()
-
-      this.commentInProgress = false
-      this.commentAlertVariant = 'bg-green-500'
-      this.commentAlertMessage = 'Comment added!'
-
-      resetForm()
-    }
+const props = defineProps({
+  getComments: {
+    type: Function,
+    required: true
   }
+})
+
+const emit = defineEmits(['update-song-comments-db'])
+
+const schema = { comment: 'required|min:3' }
+let commentInProgress = ref(false)
+let commentShowAlert = ref(false)
+let commentAlertVariant = ref('')
+let commentAlertMessage = ref('')
+
+const route = useRoute()
+
+const userLoggedIn = computed(() => userStore().userLoggedIn)
+
+const submitComment = async (values, { resetForm }) => {
+  commentShowAlert.value = true
+  commentInProgress.value = true
+  commentAlertVariant.value = 'bg-blue-500'
+  commentAlertMessage.value = 'Please wait, your comment is being created.'
+
+  try {
+    const comment = {
+      content: values.comment,
+      datePosted: new Date().toString(),
+      songId: route.params.id,
+      authorName: auth.currentUser.displayName,
+      uid: auth.currentUser.uid
+    }
+
+    await commentsCollection.add(comment)
+  } catch (error) {
+    commentInProgress.value = false
+    commentAlertVariant.value = 'bg-red-500'
+    commentAlertMessage.value = 'An unexpected error occured. Please, try again.'
+
+    console.error(error)
+
+    return
+  }
+
+  emit('update-song-comments-db')
+
+  props.getComments()
+
+  commentInProgress.value = false
+  commentAlertVariant.value = 'bg-green-500'
+  commentAlertMessage.value = 'Comment added!'
+
+  resetForm()
 }
 </script>

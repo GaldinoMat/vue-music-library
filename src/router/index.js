@@ -50,7 +50,11 @@ const routes = [
   {
     path: '/song/:id',
     name: 'song',
-    component: SongView
+    component: SongView,
+    props: {
+      default: true,
+
+    },
   },
   {
     path: '/manage',

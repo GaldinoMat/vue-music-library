@@ -8,13 +8,10 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'AuthFeedbackInfo',
-  props: {
-    actionShowAlert: Boolean,
-    actionAlertVariant: String,
-    actionAlertMessage: String
-  }
-}
+<script setup>
+const props = defineProps({
+  actionShowAlert: Boolean,
+  actionAlertVariant: String,
+  actionAlertMessage: String
+})
 </script>
