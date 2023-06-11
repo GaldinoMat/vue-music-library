@@ -7,8 +7,11 @@ exports[`SongPlaylistItem snapshot > should render correctly 1`] = `
 >
   <div>
     <router-link-stub
+      ariacurrentvalue="page"
       class="font-bold block text-gray-600 composition-name"
       custom="false"
+      id="SongName"
+      replace="false"
       to="[object Object]"
     />
     <span
@@ -22,7 +25,9 @@ exports[`SongPlaylistItem snapshot > should render correctly 1`] = `
     class="text-gray-600 text-lg"
   >
     <router-link-stub
+      ariacurrentvalue="page"
       custom="true"
+      replace="false"
       to="[object Object]"
     />
   </div>
