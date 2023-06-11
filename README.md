@@ -13,7 +13,7 @@ This application was created with the intention of learning about the Vue framew
 
 ## Conclusion
 
-Although very powerful, the Composition API seems to be in its early stages of implementation for many Vue libraries available on the web. Resources like Vue Test Utils still do not handle it very well, and the documentation is not updated to conform to this new approach to Vue. Nevertheless, the Composition API is a powerful architecture that can help developers coming from other frameworks, like React, to quickly adapt and learn the Vue ecosystem. It provides an agile way to leverage their existing knowledge and skills.
+Although very powerful, the Composition API seems to be in its early stages of implementation for many Vue libraries available on the web. Resources like Vue Test Utils still do not handle it very well, and the documentation is not updated to conform to this new approach to Vue, hence why some of the tests I created were skipped. Nevertheless, the Composition API is a powerful architecture that can help developers coming from other frameworks, like React, to quickly adapt and learn the Vue ecosystem. It provides an agile way to leverage their existing knowledge and skills.
 
 ## Disclaimer
 
