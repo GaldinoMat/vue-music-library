@@ -39,8 +39,13 @@
 
 <script setup>
 import usePlayerStore from '@/stores/Player/player.js'
+import { computed } from 'vue'
 
-const { currentSong, isPlaying, duration, seek, playerProgress } = usePlayerStore()
+const currentSong = computed(() => usePlayerStore().currentSong)
+const isPlaying = computed(() => usePlayerStore().isPlaying)
+const duration = computed(() => usePlayerStore().duration)
+const seek = computed(() => usePlayerStore().seek)
+const playerProgress = computed(() => usePlayerStore().playerProgress)
 
 const { toggleAudio, updateSeek } = usePlayerStore()
 </script>
